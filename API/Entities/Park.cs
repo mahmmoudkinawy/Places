@@ -1,7 +1,6 @@
 ﻿namespace API.Entities;
-public class NationalPark
+public class Park
 {
-    [Key]
     public int Id { get; set; }
 
     [Required]

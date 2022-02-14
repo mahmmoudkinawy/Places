@@ -4,5 +4,5 @@ public class DataContext : DbContext
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     { }
 
-    public DbSet<NationalPark> NationalParks { get; set; }
+    public DbSet<Park> Parks { get; set; }
 }
