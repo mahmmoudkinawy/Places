@@ -5,3 +5,6 @@ global using API.Data;
 global using API.Interfaces;
 global using System.Linq.Expressions;
 global using API.Repositories;
+global using API.Helpers;
+global using API.DTOs;
+global using AutoMapper;
