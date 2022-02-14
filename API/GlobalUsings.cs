@@ -8,3 +8,7 @@ global using API.Repositories;
 global using API.Helpers;
 global using API.DTOs;
 global using AutoMapper;
+global using Microsoft.AspNetCore.Mvc;
+global using System.Net;
+global using System.Text.Json;
+global using API.Middleware;
