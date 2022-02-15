@@ -7,8 +7,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
 builder.Services.AddScoped<IParkRepository, ParkRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
