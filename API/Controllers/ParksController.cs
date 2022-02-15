@@ -47,5 +47,30 @@ public class ParksController : BaseApiController
         }, createdPark);
     }
 
-   
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateParkAsync([FromRoute] int id,
+        [FromBody] UpdateParkDto updateParkDto)
+    {
+        if (updateParkDto == null || id != updateParkDto.Id)
+            return BadRequest();
+
+        _parkRepository.Update(_mapper.Map<Park>(updateParkDto));
+        await _parkRepository.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteParkAsync([FromRoute] int id)
+    {
+        var parkFromDb = await _parkRepository.GetByIdAsync(id);
+
+        if (parkFromDb == null) return NotFound();
+
+        _parkRepository.Delete(parkFromDb);
+        await _parkRepository.SaveChangesAsync();
+
+        return NoContent();
+    }
+
 }

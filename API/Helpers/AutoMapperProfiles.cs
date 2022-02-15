@@ -6,5 +6,6 @@ public class AutoMapperProfiles : Profile
         //Parks Dtos
         CreateMap<Park, ParkDto>();
         CreateMap<CreateParkDto, Park>();
+        CreateMap<UpdateParkDto, Park>();
     }
 }
