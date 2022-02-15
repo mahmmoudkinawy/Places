@@ -14,7 +14,7 @@ public class ParksController : BaseApiController
     public async Task<ActionResult<IReadOnlyCollection<ParkDto>>> GetAllParksAsync() =>
         Ok(_mapper.Map<IReadOnlyCollection<ParkDto>>(await _parkRepository.GetAllAsync()));
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "GetParkAsync")]
     public async Task<ActionResult<ParkDto>> GetParkAsync([FromRoute] int id)
     {
         var park = await _parkRepository.GetByIdAsync(id);
@@ -23,4 +23,29 @@ public class ParksController : BaseApiController
 
         return Ok(_mapper.Map<ParkDto>(park));
     }
+
+    [HttpPost]
+    //I will try to refactore it
+    public async Task<IActionResult> CreateParkAsync([FromBody] CreateParkDto createParkDto)
+    {
+        if (createParkDto == null) return BadRequest();
+
+        var createdPark = _mapper.Map<Park>(createParkDto);
+
+        var parkFromRepo = await _parkRepository
+            .GetByNameAsync(p => p.Name.ToLower().Contains(createParkDto.Name.ToLower()));
+
+        if (parkFromRepo != null)
+            return BadRequest($"Park name: {createdPark.Name} already exists");
+
+        _parkRepository.Add(createdPark);
+        await _parkRepository.SaveChangesAsync();
+
+        return CreatedAtRoute(nameof(GetParkAsync), new
+        {
+            id = createdPark.Id
+        }, createdPark);
+    }
+
+   
 }

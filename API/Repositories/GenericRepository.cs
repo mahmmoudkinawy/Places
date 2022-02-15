@@ -17,7 +17,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<T> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
-    public async Task<T> GetByNameAsync(Expression<Func<T, bool>>? filter, string name)
+    public async Task<T> GetByNameAsync(Expression<Func<T, bool>>? filter)
     {
         IQueryable<T> query = _dbSet;
 
