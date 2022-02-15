@@ -9,4 +9,3 @@ public interface IGenericRepository<T> where T : class
     void Delete(T entity);
     Task<bool> SaveChangesAsync();
 }
-

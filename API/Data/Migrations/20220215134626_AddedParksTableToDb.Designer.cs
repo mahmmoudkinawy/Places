@@ -11,15 +11,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220213220131_AddedNationalParkToDb")]
-    partial class AddedNationalParkToDb
+    [Migration("20220215134626_AddedParksTableToDb")]
+    partial class AddedParksTableToDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
 
-            modelBuilder.Entity("API.Entities.NationalPark", b =>
+            modelBuilder.Entity("API.Entities.Park", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +41,7 @@ namespace API.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NationalParks");
+                    b.ToTable("Parks");
                 });
 #pragma warning restore 612, 618
         }
