@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +7,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Places API",
+        Version = "v1",
+        Description = "It's a very simple API for implementing CRUD for Places",
+        Contact = new OpenApiContact
+        {
+            Name = "Mahmmoud Kinawy",
+            Email = "mahmmoudkinawy@gmail.com"
+        }
+    });
+});
 
 builder.Services.AddScoped<IParkRepository, ParkRepository>();
 

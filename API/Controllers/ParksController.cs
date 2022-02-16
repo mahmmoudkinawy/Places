@@ -11,10 +11,13 @@ public class ParksController : BaseApiController
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<ParkDto>>> GetAllParksAsync() =>
         Ok(_mapper.Map<IReadOnlyCollection<ParkDto>>(await _parkRepository.GetAllAsync()));
 
     [HttpGet("{id}", Name = "GetParkAsync")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ParkDto>> GetParkAsync([FromRoute] int id)
     {
         var park = await _parkRepository.GetByIdAsync(id);
@@ -24,8 +27,10 @@ public class ParksController : BaseApiController
         return Ok(_mapper.Map<ParkDto>(park));
     }
 
-    [HttpPost]
     //I will try to refactore it
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateParkAsync([FromBody] CreateParkDto createParkDto)
     {
         if (createParkDto == null) return BadRequest();
@@ -48,6 +53,8 @@ public class ParksController : BaseApiController
     }
 
     [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> UpdateParkAsync([FromRoute] int id,
         [FromBody] UpdateParkDto updateParkDto)
     {
@@ -61,6 +68,8 @@ public class ParksController : BaseApiController
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteParkAsync([FromRoute] int id)
     {
         var parkFromDb = await _parkRepository.GetByIdAsync(id);
