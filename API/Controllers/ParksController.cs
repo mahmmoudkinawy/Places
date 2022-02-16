@@ -31,14 +31,14 @@ public class ParksController : BaseApiController
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateParkAsync([FromBody] CreateParkDto createParkDto)
+    public async Task<ActionResult<ParkDto>> CreateParkAsync([FromBody] CreateParkDto createParkDto)
     {
         if (createParkDto == null) return BadRequest();
 
         var createdPark = _mapper.Map<Park>(createParkDto);
 
         var parkFromRepo = await _parkRepository
-            .GetByNameAsync(p => p.Name.ToLower().Contains(createParkDto.Name.ToLower()));
+            .GetByNameAsync(p => p.Name.ToLower().Contains(createdPark.Name.ToLower()));
 
         if (parkFromRepo != null)
             return BadRequest($"Park name: {createdPark.Name} already exists");

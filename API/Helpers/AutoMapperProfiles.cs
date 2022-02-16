@@ -10,5 +10,7 @@ public class AutoMapperProfiles : Profile
 
         //Trails Dtos
         CreateMap<Trail, TrailCreateDto>();
+        CreateMap<TrailCreateDto, Trail>();
+        CreateMap<Trail, TrailDto>();
     }
 }
