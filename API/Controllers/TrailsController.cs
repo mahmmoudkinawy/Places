@@ -55,7 +55,7 @@ public class TrailsController : BaseApiController
     [HttpPatch("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<TrailDto>> UpdateTrailAsync([FromRoute] int id,
+    public async Task<IActionResult> UpdateTrailAsync([FromRoute] int id,
         [FromBody] UpdateTrailDto updateTrailDto)
     {
         if (updateTrailDto == null || id != updateTrailDto.Id) return BadRequest();
@@ -65,4 +65,20 @@ public class TrailsController : BaseApiController
 
         return NoContent();
     }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteTrailAsync([FromRoute] int id)
+    {
+        var trail = await _trailRepository.GetByIdAsync(t => t.Id == id);
+
+        if (trail == null) return NotFound();
+
+        _trailRepository.Delete(trail);
+        await _trailRepository.SaveChangesAsync();
+
+        return NoContent();
+    }
+
 }
