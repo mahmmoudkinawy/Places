@@ -20,7 +20,7 @@ public class ParksController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ParkDto>> GetParkAsync([FromRoute] int id)
     {
-        var park = await _parkRepository.GetByIdAsync(id);
+        var park = await _parkRepository.GetByIdAsync(p => p.Id == id);
 
         if (park == null) return NotFound();
 
@@ -72,7 +72,7 @@ public class ParksController : BaseApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteParkAsync([FromRoute] int id)
     {
-        var parkFromDb = await _parkRepository.GetByIdAsync(id);
+        var parkFromDb = await _parkRepository.GetByIdAsync(p => p.Id == id);
 
         if (parkFromDb == null) return NotFound();
 

@@ -6,6 +6,8 @@ public static class ApplicationServiceExtensions
     {
         services.AddScoped<IParkRepository, ParkRepository>();
 
+        services.AddScoped<ITrailRepository, TrailRepository>();
+
         services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
         services.AddDbContext<DataContext>(options =>

@@ -13,16 +13,44 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public void Delete(T entity) => _dbSet.Remove(entity);
 
-    public async Task<IReadOnlyCollection<T>> GetAllAsync() => await _dbSet.ToListAsync();
+    public async Task<IReadOnlyCollection<T>> GetAllAsync(string? includeProperties = null)
+    {
+        IQueryable<T> query = _dbSet;
 
-    public async Task<T> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
+        if (includeProperties != null)
+            foreach (var includeProperty in includeProperties.Split(new char[] { ',' },
+                    StringSplitOptions.RemoveEmptyEntries))
+                query = query.Include(includeProperty);
 
-    public async Task<T> GetByNameAsync(Expression<Func<T, bool>>? filter)
+        return await query.ToListAsync();
+    }
+
+    public async Task<T> GetByIdAsync(Expression<Func<T, bool>> filter,
+        string? includeProperties = null)
+    {
+        IQueryable<T> query = _dbSet;
+
+        if (includeProperties != null)
+            foreach (var includeProperty in includeProperties.Split(new char[] { ',' },
+                    StringSplitOptions.RemoveEmptyEntries))
+                query = query.Include(includeProperty);
+
+        return await query.FirstOrDefaultAsync(filter);
+    }
+
+    public async Task<T> GetByNameAsync(Expression<Func<T, bool>>? filter,
+        string? includeProperties = null)
     {
         IQueryable<T> query = _dbSet;
 
         if (filter != null)
             query = query.Where(filter);
+
+        if (includeProperties != null)
+            foreach (var includeProperty in includeProperties.Split(new char[] { ',' },
+                    StringSplitOptions.RemoveEmptyEntries))
+                query = query.Include(includeProperty);
+
 
         return await query.FirstOrDefaultAsync();
     }

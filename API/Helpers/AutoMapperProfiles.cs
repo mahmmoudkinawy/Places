@@ -7,5 +7,8 @@ public class AutoMapperProfiles : Profile
         CreateMap<Park, ParkDto>();
         CreateMap<CreateParkDto, Park>();
         CreateMap<UpdateParkDto, Park>();
+
+        //Trails Dtos
+        CreateMap<Trail, TrailCreateDto>();
     }
 }

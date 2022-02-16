@@ -14,3 +14,5 @@ global using System.Text.Json;
 global using API.Middleware;
 global using API.Extensions;
 global using Microsoft.OpenApi.Models;
+global using System.ComponentModel.DataAnnotations.Schema;
+
