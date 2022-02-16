@@ -51,4 +51,18 @@ public class TrailsController : BaseApiController
             id = createdTrail.Id
         }, createdTrail);
     }
+
+    [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<TrailDto>> UpdateTrailAsync([FromRoute] int id,
+        [FromBody] UpdateTrailDto updateTrailDto)
+    {
+        if (updateTrailDto == null || id != updateTrailDto.Id) return BadRequest();
+
+        _trailRepository.Update(_mapper.Map<Trail>(updateTrailDto));
+        await _trailRepository.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

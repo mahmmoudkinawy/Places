@@ -9,8 +9,8 @@ public class AutoMapperProfiles : Profile
         CreateMap<UpdateParkDto, Park>();
 
         //Trails Dtos
-        CreateMap<Trail, TrailCreateDto>();
-        CreateMap<TrailCreateDto, Trail>();
+        CreateMap<TrailCreateDto, Trail>().ReverseMap();
         CreateMap<Trail, TrailDto>();
+        CreateMap<UpdateTrailDto, Trail>();
     }
 }
