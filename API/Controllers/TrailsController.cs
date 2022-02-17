@@ -28,6 +28,21 @@ public class TrailsController : BaseApiController
         return Ok(_mapper.Map<TrailDto>(trail));
     }
 
+
+    [HttpGet("get-trail-in-park/{parkId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IReadOnlyCollection<TrailDto>>> GetTrailsInParkAsync
+        ([FromRoute] int parkId)
+    {
+        var trailsInPark = await _unitOfWork.TrailRepository.GetTrailsInParkAsync(parkId);
+
+        if (trailsInPark == null) return NotFound();
+
+        return Ok(_mapper.Map<IReadOnlyCollection<TrailDto>>(trailsInPark));
+    }
+
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
