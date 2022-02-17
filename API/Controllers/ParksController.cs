@@ -1,26 +1,26 @@
 ﻿namespace API.Controllers;
 public class ParksController : BaseApiController
 {
-    private readonly IParkRepository _parkRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public ParksController(IParkRepository parkRepository, IMapper mapper)
+    public ParksController(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _parkRepository = parkRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<ParkDto>>> GetAllParksAsync() =>
-        Ok(_mapper.Map<IReadOnlyCollection<ParkDto>>(await _parkRepository.GetAllAsync()));
+        Ok(_mapper.Map<IReadOnlyCollection<ParkDto>>(await _unitOfWork.ParkRepository.GetAllAsync()));
 
     [HttpGet("{id}", Name = "GetParkAsync")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ParkDto>> GetParkAsync([FromRoute] int id)
     {
-        var park = await _parkRepository.GetByIdAsync(p => p.Id == id);
+        var park = await _unitOfWork.ParkRepository.GetByIdAsync(p => p.Id == id);
 
         if (park == null) return NotFound();
 
@@ -37,14 +37,14 @@ public class ParksController : BaseApiController
 
         var createdPark = _mapper.Map<Park>(createParkDto);
 
-        var parkFromRepo = await _parkRepository
+        var parkFromRepo = await _unitOfWork.ParkRepository
             .GetByNameAsync(p => p.Name.ToLower().Contains(createdPark.Name.ToLower()));
 
         if (parkFromRepo != null)
             return BadRequest($"Park name: {createdPark.Name} already exists");
 
-        _parkRepository.Add(createdPark);
-        await _parkRepository.SaveChangesAsync();
+        _unitOfWork.ParkRepository.Add(createdPark);
+        await _unitOfWork.SaveChangesAsync();
 
         return CreatedAtRoute(nameof(GetParkAsync), new
         {
@@ -61,8 +61,8 @@ public class ParksController : BaseApiController
         if (updateParkDto == null || id != updateParkDto.Id)
             return BadRequest();
 
-        _parkRepository.Update(_mapper.Map<Park>(updateParkDto));
-        await _parkRepository.SaveChangesAsync();
+        _unitOfWork.ParkRepository.Update(_mapper.Map<Park>(updateParkDto));
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }
@@ -72,12 +72,12 @@ public class ParksController : BaseApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteParkAsync([FromRoute] int id)
     {
-        var parkFromDb = await _parkRepository.GetByIdAsync(p => p.Id == id);
+        var parkFromDb = await _unitOfWork.ParkRepository.GetByIdAsync(p => p.Id == id);
 
         if (parkFromDb == null) return NotFound();
 
-        _parkRepository.Delete(parkFromDb);
-        await _parkRepository.SaveChangesAsync();
+        _unitOfWork.ParkRepository.Delete(parkFromDb);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }
