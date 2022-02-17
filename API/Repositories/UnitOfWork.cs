@@ -1,7 +1,9 @@
 ﻿namespace API.Repositories;
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly DataContext _context;
+
+    private bool _disposed = false;
 
     public UnitOfWork(DataContext context)
     {
@@ -15,4 +17,22 @@ public class UnitOfWork : IUnitOfWork
     public ITrailRepository TrailRepository { get; private set; }
 
     public async Task<bool> SaveChangesAsync() => await _context.SaveChangesAsync() > 0;
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (!_disposed) //true
+        {
+            if (disposing)
+            {
+                _context.Dispose();
+            }
+            _disposed = true;
+        }
+    }
 }
