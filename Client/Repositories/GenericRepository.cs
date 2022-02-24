@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Client.Repositories;
+﻿namespace Client.Repositories;
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     private readonly IHttpClientFactory _httpClientFactory;

@@ -10,6 +10,8 @@ public class Park
     public string State { get; set; }
 
     public DateTime Created { get; set; }
+
+    [ValidateNever]
     public byte[] Picture { get; set; }
     public DateTime Established { get; set; }
 }
