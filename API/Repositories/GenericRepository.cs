@@ -9,10 +9,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _dbSet = _context.Set<T>();
     }
 
-    public void Add(T entity) => _dbSet.Add(entity);
-
-    public void Delete(T entity) => _dbSet.Remove(entity);
-
     public async Task<IReadOnlyCollection<T>> GetAllAsync(string? includeProperties = null)
     {
         IQueryable<T> query = _dbSet;
@@ -55,6 +51,23 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await query.FirstOrDefaultAsync();
     }
 
-    public void Update(T entity) => _dbSet.Update(entity);
+    public async Task Update(T entity)
+    {
+        _dbSet.Update(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task Add(T entity)
+    {
+        _dbSet.Add(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task Delete(T entity)
+    {
+        _dbSet.Remove(entity);
+        await _context.SaveChangesAsync();
+    }
+
 }
 

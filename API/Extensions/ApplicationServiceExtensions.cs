@@ -4,7 +4,9 @@ public static class ApplicationServiceExtensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services,
         IConfiguration config)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+        services.AddScoped<ITrailRepository, TrailRepository>();
 
         services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
