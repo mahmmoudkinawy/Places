@@ -1,19 +1,19 @@
 ﻿namespace API.Controllers;
 public class TrailsController : BaseApiController
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly ITrailRepository _trailRepository;
     private readonly IMapper _mapper;
 
-    public TrailsController(IUnitOfWork unitOfWork, IMapper mapper)
+    public TrailsController(ITrailRepository trailRepository, IMapper mapper)
     {
-        _unitOfWork = unitOfWork;
+        _trailRepository = trailRepository;
         _mapper = mapper;
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<TrailDto>>> GetAllTrailsWithParksAsync()
-        => Ok(_mapper.Map<IReadOnlyCollection<TrailDto>>(await _unitOfWork.TrailRepository.GetAllAsync(includeProperties: "Park")));
+        => Ok(_mapper.Map<IReadOnlyCollection<TrailDto>>(await _trailRepository.GetAllAsync(includeProperties: "Park")));
 
 
     [HttpGet("{id}", Name = "GetTrailWithParkAsync")]
@@ -21,7 +21,7 @@ public class TrailsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TrailDto>> GetTrailWithParkAsync([FromRoute] int id)
     {
-        var trail = await _unitOfWork.TrailRepository.GetByIdAsync(t => t.Id == id, includeProperties: "Park");
+        var trail = await _trailRepository.GetByIdAsync(t => t.Id == id, includeProperties: "Park");
 
         if (trail == null) return NotFound();
 
@@ -35,7 +35,7 @@ public class TrailsController : BaseApiController
     public async Task<ActionResult<IReadOnlyCollection<TrailDto>>> GetTrailsInParkAsync
         ([FromRoute] int parkId)
     {
-        var trailsInPark = await _unitOfWork.TrailRepository.GetTrailsInParkAsync(parkId);
+        var trailsInPark = await _trailRepository.GetTrailsInParkAsync(parkId);
 
         if (trailsInPark == null) return NotFound();
 
@@ -52,14 +52,13 @@ public class TrailsController : BaseApiController
 
         var createdTrail = _mapper.Map<Trail>(trailCreateDto);
 
-        var trailFromRepo = await _unitOfWork.TrailRepository
+        var trailFromRepo = await _trailRepository
                 .GetByNameAsync(t => t.Name.ToLower().Contains(createdTrail.Name.ToLower()));
 
         if (trailFromRepo != null)
             return BadRequest($"Trail with {createdTrail.Name} is already exists.");
 
-        _unitOfWork.TrailRepository.Add(createdTrail);
-        await _unitOfWork.SaveChangesAsync();
+        await _trailRepository.Add(createdTrail);
 
         return CreatedAtRoute(nameof(GetTrailWithParkAsync), new
         {
@@ -75,8 +74,7 @@ public class TrailsController : BaseApiController
     {
         if (updateTrailDto == null || id != updateTrailDto.Id) return BadRequest();
 
-        _unitOfWork.TrailRepository.Update(_mapper.Map<Trail>(updateTrailDto));
-        await _unitOfWork.SaveChangesAsync();
+        await _trailRepository.Update(_mapper.Map<Trail>(updateTrailDto));
 
         return NoContent();
     }
@@ -86,12 +84,11 @@ public class TrailsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTrailAsync([FromRoute] int id)
     {
-        var trail = await _unitOfWork.TrailRepository.GetByIdAsync(t => t.Id == id);
+        var trail = await _trailRepository.GetByIdAsync(t => t.Id == id);
 
         if (trail == null) return NotFound();
 
-        _unitOfWork.TrailRepository.Delete(trail);
-        await _unitOfWork.SaveChangesAsync();
+        await _trailRepository.Delete(trail);
 
         return NoContent();
     }

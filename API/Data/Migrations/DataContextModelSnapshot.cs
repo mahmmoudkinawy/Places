@@ -33,6 +33,10 @@ namespace API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<byte[]>("Picture")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -40,24 +44,6 @@ namespace API.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Parks");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Created = new DateTime(2022, 2, 16, 22, 36, 48, 861, DateTimeKind.Local).AddTicks(3100),
-                            Established = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Park 1",
-                            State = "Shebin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Created = new DateTime(2022, 2, 9, 22, 36, 48, 861, DateTimeKind.Local).AddTicks(3112),
-                            Established = new DateTime(2002, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Park 2",
-                            State = "Sadat"
-                        });
                 });
 
             modelBuilder.Entity("API.Entities.Trail", b =>
